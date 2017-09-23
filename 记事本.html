@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="vue.js"></script>
+	<style>
+	    *{padding: 0;margin: 0;}
+         #wrap{width: 600px;background: #00CCFF;margin: 100px auto;border: 2px solid #999;border-radius: 10px;padding:20px 60px 100px; }
+         #wrap h2{font-size: 26px;color: #FF3300;line-height: 80px;border-bottom:3px solid #ccc;}
+         #wrap #btn {font-size: 40px;font-weight: bold;color:#D0D0D0;text-shadow: 0 0 20px #787878;cursor: pointer;}
+         label{font-size: 18px;color: #666;line-height: 40px;}
+         input{width: 100%;height: 40px;font-size: 16px;margin-bottom: 20px;border:1px solid #666;border-radius: 5px;text-indent: 1em;}
+         button{width:80%;height: 40px;margin-bottom: 30px;border-radius: 5px;font-size: 18px;color: #fff;box-shadow: 0 0 12px inset;display: block;margin:20px auto;cursor: pointer;}
+         .danger{background:#c81623; }
+         .normal{background: #0066CC;}
+          #wrap h3{font-size: 24px;color: #FF3300;line-height: 40px;}
+          table{border-collapse: collapse;color: #484848;}
+          th,td{border:1px solid #707070;padding: 10px;text-align: center;padding: 10px;width: 400px;}
+          span{font-size: 18px;color: #333;}
+           .alertBox{width: 300px;height: 200px;background: #B8B8B8;border:1px solid #707070;border-radius: 5px;text-align: center;position: absolute;margin: auto;left: 0;right: 0;top: 0;bottom: 0;padding: 20px 0;}
+           .alertBox button{width:80px;background: #0066CC;}
+	</style>
+</head>
+<body>
+	<div id="wrap">	  
+        <h2>提醒事项</h2>	         
+        <div id="btn" @click='show'>{{ txt }}</div>
+        <div id="box" v-show='bol'>
+             <form >
+	            <label>待办日期</label><br/>
+	            <input type="text" placeholder="输入待办日期" v-model='date'><br/>
+	            <label>待办事项描述</label><br/>
+	            <input type="text" placeholder="待办事项描述" v-model='des'><br/>                      
+           </form>
+	        <button type="button" class="danger" @click='add()'>添加</button><br/>
+	        <button type="button" class="normal" @click='rest()'>重置</button><br/>
+        </div>      
+        <h3>待办事项列表</h3>
+        <table>
+             <thead>
+                <tr>
+                   <th>序号</th>
+                   <th>待办日期</th>
+                   <th>事项描述</th>
+                   <th>操作</th>
+                </tr>
+             </thead>
+             <tbody>
+                <tr v-for='(item,index) in arr'>
+                  <td>{{ index+1 }}</td>
+                  <td>{{ item.date }}</td>
+                  <td>{{ item.des }}</td>
+                  <!-- <td><button type="button" class="normal" @click='del(index)'>删除</button></td> -->
+                    <!--第二种方法-->
+                  <td><button type="button" class="normal" @click="isShow=true; nowIndex=index ">删除</button>
+                  </td>
+               </tr>
+               <tr v-show='arr.length == 0'>
+                  <td colspan="4"><span>暂无数据</span></td>
+               </tr>
+               <tr v-show='arr.length != 0'>
+                  <td colspan="4"><button type="button" class="danger" @click='delAll()'>删除全部</button></td>
+               </tr>                
+             </tbody>
+        </table>
+        <div class="alertBox" v-show='isShow'>
+           <p>确定要删除吗？</p>
+           <button @click='isShow=false'>取消</button>
+           <button @click='Ok()'>确定</button>
+
+        </div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+    var vm=new Vue({
+    	el:"#wrap",
+    	data:{
+           bol:false,
+           txt:"+",
+           arr:[
+              // {date:"05/27",des:"老弟生日"},
+              // {date:"08/08",des:"看房"},
+              // {date:"08/19",des:"回家"},	
+              // {date:"09/17",des:"去旅游"}
+           ],
+           date:'',
+    	   des:'',
+    	   isShow:false,
+    	   nowIndex:-1
+    	},
+    	
+    	methods:{
+    		show:function(){
+                this.bol = !this.bol;
+                this.txt=this.txt=="+"?"-":"+";
+    		},
+    		add:function(){
+    			this.arr.push({date:this.date,des:this.des});
+    			this.date='';
+    			this.des='';
+                
+    		},
+    		// del:function(i){
+    		// 	this.nowIndex=i;//先将索引值存储
+    		// 	this.isShow=true;
+    		// },
+    		Ok:function(){
+
+                this.arr.splice(this.nowIndex,1);
+                this.isShow=false;
+    		},
+    		delAll:function(){
+    			this.arr=[];
+    		},
+    		rest:function(){
+    			 this.date='';
+    			 this.des='';
+    		}
+    	}
+    });
+</script>
